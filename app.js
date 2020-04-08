@@ -5,6 +5,11 @@ const inquirer = require("inquirer");
 const path = require("path"); 
 const fs = require("fs");
 
+const OUTPUT_DIR = path.resolve(__dirname, "output")
+const outputPath = path.join(OUTPUT_DIR, "team.html");
+
+const render = require("./lib/htmlRenderer");
+
 const employees = [];
 let continueAdding = true;
 const yesNoToBool = new Map([["No",false],["Yes",true]]);
@@ -23,7 +28,7 @@ const addAnotherEmployee = [{
     choices: ["Yes", "No"]
 }];
 
-async function init()
+async function getEmployees()
     {
     console.log("\nAdd Manger");
 
@@ -49,7 +54,7 @@ async function init()
         }
 
         console.log("");
-        
+
         const { addAnother } = await inquirer.prompt(addAnotherEmployee);
 
         continueAdding = yesNoToBool.get(addAnother);
@@ -57,4 +62,4 @@ async function init()
     } while (continueAdding)
 }
 
-init();
+getEmployees();
