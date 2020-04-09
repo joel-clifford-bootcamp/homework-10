@@ -2,7 +2,7 @@ const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
-const path = require("path"); 
+const path = require("path");
 const fs = require("fs");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output")
@@ -10,29 +10,43 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+// stores employees
 const employees = [];
-let continueAdding = true;
 
+// definition questions instantiated in advance so 
+// id validation can be added with employees array 
+// scoped in - allowing for duplicate id check
 const internQuestions = Intern.definitionQuestions;
 const engineerQuestions = Engineer.definitionQuestions;
 const managerQuestions = Manager.definitionQuestions;
 const yesNoToBool = new Map([["No",false],["Yes",true]]);
 
+// validate id format and disallow duplicates
 const validateId = async (input) => {
 
-    console.log(employees.map(employee => employee.getId()));
+    if(input.length === 0)
+        return "Field cannot be blank!";
 
-    if(employees.map(employee => employee.getId()).includes(input)){
+    const floatInput = parseFloat(input);
+
+    if(!Number.isInteger(floatInput))
+        return "Field must be an integer";      
+
+    if(parseInt(floatInput) <= 0)
+        return "Field must be greater than 0";
+
+    if(employees.map(employee => employee.id).includes(input))
         return "Id already in use"
-    }
-
+    
     return true;
 }
 
-// internQuestions[1].validate = validateId;
-// engineerQuestions[1].validate = validateId;
-// managerQuestions[1].validate = validateId;
+// add id validation to inquirer prompt arguments
+internQuestions[1].validate = validateId;
+engineerQuestions[1].validate = validateId;
+managerQuestions[1].validate = validateId;
 
+// employee type to be added inquirer prompt argument
 const getEmployeeType = {
     type: "list",
     name: "employeeType",
@@ -40,6 +54,7 @@ const getEmployeeType = {
     choices: ["Intern", "Engineer"]
 };
 
+// add another employee inquirer prompt argument
 const addAnotherEmployee = [{
     type: "list",
     name: "addAnother",
@@ -47,8 +62,21 @@ const addAnotherEmployee = [{
     choices: ["Yes", "No"]
 }];
 
-async function getEmployees()
-    {
+// populate employee with test values
+function getTestEmployees()
+{
+    employees.push(new Manager("Jared",1,"jared@fakeemail.com",100));
+    employees.push(new Engineer("Alec",2,"alec@fakeemail.com","ibealec"));
+    employees.push(new Engineer("Tammer",3,"tammer@fakeemail.com","tammerg"));
+    employees.push(new Engineer("Christian",4,"christian@fakeemail.com","ceckenrode"));
+    employees.push(new Intern("John",5,"john@fakeemail.com","2University"));
+}
+
+// prompt users to enter team members
+async function getEmployees(){
+
+    let continueAdding = true;
+
     console.log("\nAdd Manger");
 
     let { name: managerName, 
@@ -87,12 +115,32 @@ async function getEmployees()
         console.log("");
 
         const { addAnother } = await inquirer.prompt(addAnotherEmployee);
-        
-        console.log(employees);
 
         continueAdding = yesNoToBool.get(addAnother);
 
     } while (continueAdding)
 }
 
-getEmployees();
+function renderEmployees(){
+    
+    const employeesHtml = render(employees);
+
+    fs.writeFile(outputPath,employeesHtml, err => {
+
+        if(err) throw err;
+
+        console.log("Team profile generated successfully!")
+
+    });
+}
+
+async function init(){
+
+    // await getEmployees();
+
+    getTestEmployees();
+
+    renderEmployees();
+}
+
+init()
