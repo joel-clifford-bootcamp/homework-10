@@ -1,0 +1,51 @@
+body{
+    background-image: url("email-pattern.png");
+}
+
+.team-heading{
+    background-color: #222;
+    color: white;
+    border-radius: 0;
+}
+
+.employee-card{
+    width: 270px;
+    margin: 10px;
+    box-shadow: 5px 5px 5px #555;
+    border-radius: 0;
+    border-width: 0;
+}
+
+.card-header{
+    background-color: rgb(9, 9, 100);
+}
+
+a{
+    color: navy
+}
+
+h2{
+    font-size: 1.5rem;
+}
+
+h3{
+    font-size: 1.25rem;
+}
+
+.card-title{
+    color: white;
+}
+
+.card-header:first-child {
+    border-radius: 0;
+}
+
+.card-body{
+    padding: 1.25rem 0.25rem;
+    color: #333;
+}
+
+.list-group-item{
+    border-width: 0;
+    padding: 0.25rem 0.25rem 0.25rem 1.25rem
+}

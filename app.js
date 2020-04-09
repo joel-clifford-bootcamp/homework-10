@@ -108,7 +108,7 @@ async function getEmployees(){
                     email: engineerEmail, 
                     github } = await inquirer.prompt(engineerQuestions);
 
-                employees.push(new Intern(engineerName, engineerId, engineerEmail, github));
+                employees.push(new Engineer(engineerName, engineerId, engineerEmail, github));
                 break;
         }
 
@@ -136,9 +136,7 @@ function renderEmployees(){
 
 async function init(){
 
-    // await getEmployees();
-
-    getTestEmployees();
+    await getEmployees();
 
     renderEmployees();
 }
